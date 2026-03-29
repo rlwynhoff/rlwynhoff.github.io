@@ -69,7 +69,6 @@
             <span class="material-symbols-rounded icon-small">close</span>
           </button>
         </div>
-
         <div class="stats-bar">
           <div class="stat-item playing-time-stat" style="display: none;">
             <span class="material-symbols-rounded icon-themed">schedule</span>
@@ -88,22 +87,17 @@
             <span class="min-age-value"></span>
           </div>
         </div>
-
         <div class="description-section">
-          <div class="teaser-text" data-full-text="">
-          </div>
+          <div class="teaser-text" data-full-text=""></div>
         </div>
-
         <div class="tags-section">
           <h2>Mechanics</h2>
           <div class="mechanic-chips-container"></div>
         </div>
-
         <div class="expansions-section" style="display: none;">
           <h2>Expansions</h2>
           <div class="expansion-chips"></div>
         </div>
-
         <div class="bottom-info">
           <div class="stat-item rating-section" style="display: none;">
             <div class="rating-gauge-container"></div>
@@ -129,15 +123,12 @@
   <template id="expansion-chip-template">
     <a href="" target="_blank" class="expansion-chip"></a>
   </template>
-
   <template id="category-chip-template">
     <span class="tag-chip category-chip"></span>
   </template>
-
   <template id="mechanic-chip-template">
     <span class="tag-chip mechanic-chip"></span>
   </template>
-
   <template id="complexity-gauge-template">
     <svg class="complexity-gauge" width="24" height="24" viewBox="0 0 24 24" style="display: block;">
       <circle class="gauge-bg" cx="12" cy="12" r="10" />
@@ -145,7 +136,6 @@
       <text class="gauge-text" x="12" y="12" dy=".3em"></text>
     </svg>
   </template>
-
   <template id="rating-gauge-template">
     <svg class="complexity-gauge rating-gauge" width="24" height="24" viewBox="0 0 24 24" style="display: block;">
       <circle class="gauge-bg" cx="12" cy="12" r="10" />
@@ -153,626 +143,371 @@
       <text class="gauge-text" x="12" y="12" dy=".3em"></text>
     </svg>
   </template>
-
   <template id="error-template">
     <div class="error">
       <h2>⚠️ Database Loading Error</h2>
       <pre class="error-message"></pre>
     </div>
   </template>
-
   <template id="no-results-template">
     <div class="no-results">No games found matching your criteria.</div>
   </template>
-
   <template id="pagination-template">
     <div class="pagination"></div>
   </template>
-
   <template id="pagination-button-template">
     <button class="pagination-btn"></button>
   </template>
-
   <template id="pagination-ellipsis-template">
     <span>...</span>
   </template>
-
   <template id="tag-chips-container-template">
     <div class="tag-chips"></div>
   </template>
-
   <template id="more-button-template">
     <button class="more-button" onclick="handleMoreButtonClick(this)">more</button>
   </template>
-
   <template id="less-button-template">
     <button class="more-button" onclick="handleMoreButtonClick(this)">less</button>
   </template>
-
   <template id="filter-dropdown-template">
     <details class="filter-dropdown">
       <summary><span class="material-symbols-rounded icon-medium">filter_list</span> <span class="filter-title"></span></summary>
       <div class="filter-dropdown-content"></div>
     </details>
   </template>
-
   <template id="game-grid-template">
     <div class="game-grid"></div>
   </template>
 
   <script src="app-sqlite.js"></script>
+
   <script>
- window.addEventListener("load", function () {
-  const ADMIN_PIN = "2485";
-  const STORAGE_KEY_BORROWED = "borrowedBoard_borrowed";
-  const STORAGE_KEY_LOG = "borrowedBoard_log";
- 
-  // ---- STATE ----
-  let borrowed = JSON.parse(localStorage.getItem(STORAGE_KEY_BORROWED) || "{}");
-  let log = JSON.parse(localStorage.getItem(STORAGE_KEY_LOG) || "[]");
-  let isAdmin = false;
-  let activeBorrowName = null;
- 
-  // ---- INJECT CSS ----
-  const style = document.createElement("style");
-  style.textContent = `
-    /* --- Badges on game cards --- */
-    .bb-badge {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 800;
-      padding: 0.2rem 0.55rem;
-      border-radius: 6px;
-      margin-top: 6px;
-      letter-spacing: 0.03em;
-      pointer-events: none;
-    }
-    .bb-badge-available { background: #d4f7ec; color: #0a7a56; }
-    .bb-badge-borrowed  { background: #fde0e0; color: #b81c1c; }
- 
-    /* --- Floating button --- */
-    #bb-fab {
-      position: fixed;
-      bottom: 1.5rem;
-      right: 1.5rem;
-      z-index: 900;
-      background: #6C5CE7;
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      padding: 0.75rem 1.3rem;
-      font-size: 0.95rem;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 4px 18px rgba(108,92,231,0.45);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: transform 0.15s, box-shadow 0.15s;
-      font-family: inherit;
-    }
-    #bb-fab:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(108,92,231,0.5); }
- 
-    /* --- Modal overlay --- */
-    #bb-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    #bb-overlay.open { display: flex; }
- 
-    #bb-modal {
-      background: #fff;
-      border-radius: 18px;
-      padding: 2rem;
-      width: 100%;
-      max-width: 480px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-      animation: bbPop 0.2s ease;
-      font-family: inherit;
-    }
-    @keyframes bbPop {
-      from { transform: scale(0.88); opacity: 0; }
-      to   { transform: scale(1);    opacity: 1; }
-    }
- 
-    #bb-modal h2 {
-      font-size: 1.4rem;
-      font-weight: 900;
-      margin-bottom: 0.25rem;
-      color: #2d2d2d;
-    }
-    #bb-modal .bb-subtitle {
-      font-size: 0.88rem;
-      color: #888;
-      margin-bottom: 1.2rem;
-      font-weight: 600;
-    }
-    #bb-modal label {
-      display: block;
-      font-weight: 700;
-      font-size: 0.88rem;
-      margin: 0.9rem 0 0.3rem;
-      color: #2d2d2d;
-    }
-    #bb-modal input, #bb-modal select {
-      width: 100%;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      padding: 0.6rem 0.85rem;
-      font-size: 0.95rem;
-      font-family: inherit;
-      font-weight: 600;
-      outline: none;
-      transition: border-color 0.2s;
-      box-sizing: border-box;
-    }
-    #bb-modal input:focus, #bb-modal select:focus { border-color: #6C5CE7; }
- 
-    .bb-actions {
-      display: flex;
-      gap: 0.6rem;
-      margin-top: 1.4rem;
-      flex-wrap: wrap;
-    }
-    .bb-btn {
-      flex: 1;
-      min-width: 100px;
-      border: none;
-      border-radius: 10px;
-      padding: 0.65rem 1rem;
-      font-family: inherit;
-      font-size: 0.95rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 0.1s;
-    }
-    .bb-btn:hover { transform: translateY(-2px); }
-    .bb-btn-primary   { background: #1DD1A1; color: #fff; }
-    .bb-btn-danger    { background: #FF4757; color: #fff; }
-    .bb-btn-secondary { background: #f0f0f0; color: #2d2d2d; }
-    .bb-btn-purple    { background: #6C5CE7; color: #fff; }
- 
-    /* --- Game list in modal --- */
-    .bb-game-list {
-      max-height: 280px;
-      overflow-y: auto;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      margin-top: 0.5rem;
-    }
-    .bb-game-item {
-      padding: 0.6rem 0.9rem;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 600;
-      border-bottom: 1px solid #f0f0f0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      transition: background 0.1s;
-    }
-    .bb-game-item:last-child { border-bottom: none; }
-    .bb-game-item:hover { background: #f5f3ff; }
-    .bb-game-item.selected { background: #ede9ff; }
-    .bb-game-item .bb-game-status {
-      font-size: 0.72rem;
-      font-weight: 800;
-      padding: 0.15rem 0.5rem;
-      border-radius: 6px;
-    }
- 
-    /* --- Log table --- */
-    .bb-log-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.82rem;
-      margin-top: 0.75rem;
-    }
-    .bb-log-table th {
-      background: #6C5CE7;
-      color: #fff;
-      padding: 0.5rem 0.7rem;
-      text-align: left;
-      font-weight: 800;
-    }
-    .bb-log-table td {
-      padding: 0.5rem 0.7rem;
-      border-bottom: 1px solid #f0f0f0;
-      color: #2d2d2d;
-    }
-    .bb-log-table tr:last-child td { border-bottom: none; }
-    .bb-log-table tr:hover td { background: #fafafa; }
-    .bb-log-empty { text-align: center; color: #aaa; padding: 1.5rem; font-size: 0.9rem; }
- 
-    /* --- PIN pad --- */
-    .bb-pin-display {
-      font-size: 2rem;
-      text-align: center;
-      letter-spacing: 0.5rem;
-      margin: 0.75rem 0;
-      color: #2d2d2d;
-      font-weight: 900;
-      min-height: 2.5rem;
-    }
-    .bb-pin-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .bb-pin-btn {
-      background: #f5f3ff;
-      border: 2px solid #e0e0e0;
-      border-radius: 10px;
-      padding: 0.9rem;
-      font-size: 1.2rem;
-      font-weight: 800;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.1s;
-    }
-    .bb-pin-btn:hover { background: #ede9ff; border-color: #6C5CE7; }
-    .bb-pin-btn.wide { grid-column: span 2; }
-    .bb-pin-error { color: #FF4757; text-align: center; font-size: 0.85rem; font-weight: 700; margin-top: 0.5rem; min-height: 1.2rem; }
- 
-    /* --- Admin panel borrowed list --- */
-    .bb-borrowed-item {
-      background: #fff8f8;
-      border: 2px solid #fde0e0;
-      border-radius: 10px;
-      padding: 0.7rem 1rem;
-      margin-bottom: 0.6rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .bb-borrowed-info { font-size: 0.88rem; font-weight: 700; color: #2d2d2d; }
-    .bb-borrowed-info span { display: block; font-size: 0.78rem; color: #888; font-weight: 600; }
- 
-    /* --- Toast --- */
-    #bb-toast {
-      position: fixed;
-      bottom: 5rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: #2d2d2d;
-      color: #fff;
-      padding: 0.7rem 1.4rem;
-      border-radius: 30px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      z-index: 1100;
-      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-      pointer-events: none;
-      white-space: nowrap;
-    }
-    #bb-toast.show { transform: translateX(-50%) translateY(0); }
- 
-    /* Admin badge on FAB */
-    #bb-fab.admin-mode { background: #FF4757; }
-  `;
-  document.head.appendChild(style);
- 
-  // ---- INJECT HTML ----
-  document.body.insertAdjacentHTML("beforeend", `
-    <button id="bb-fab" onclick="bbOpen('main')">🎲 Borrow / Admin</button>
- 
-    <div id="bb-overlay">
-      <div id="bb-modal"></div>
-    </div>
- 
-    <div id="bb-toast"></div>
-  `);
- 
-  // ---- SAVE ----
-  function save() {
-    localStorage.setItem(STORAGE_KEY_BORROWED, JSON.stringify(borrowed));
-    localStorage.setItem(STORAGE_KEY_LOG, JSON.stringify(log));
-  }
- 
-  // ---- TOAST ----
-  function toast(msg) {
-    const t = document.getElementById("bb-toast");
-    t.textContent = msg;
-    t.classList.add("show");
-    setTimeout(() => t.classList.remove("show"), 3000);
-  }
- 
-  // ---- MODAL OPEN/CLOSE ----
-  window.bbOpen = function (screen) {
-    document.getElementById("bb-overlay").classList.add("open");
-    bbRender(screen);
-  };
- 
-  window.bbClose = function () {
-    document.getElementById("bb-overlay").classList.remove("open");
-    activeBorrowName = null;
-  };
- 
-  document.getElementById("bb-overlay").addEventListener("click", function (e) {
-    if (e.target === this) bbClose();
-  });
- 
-  // ---- RENDER SCREENS ----
-  function bbRender(screen) {
-    const modal = document.getElementById("bb-modal");
-    if (screen === "main")       modal.innerHTML = renderMain();
-    if (screen === "borrow")     modal.innerHTML = renderBorrow();
-    if (screen === "pin")        modal.innerHTML = renderPin();
-    if (screen === "admin")      modal.innerHTML = renderAdmin();
-    if (screen === "log")        modal.innerHTML = renderLog();
-  }
- 
-  // ---- MAIN MENU ----
-  function renderMain() {
-    const count = Object.keys(borrowed).length;
-    return `
-      <h2>🎲 The Borrowed Board</h2>
-      <p class="bb-subtitle">${count > 0 ? `${count} game${count !== 1 ? "s" : ""} currently borrowed` : "All games are available!"}</p>
-      <div class="bb-actions" style="flex-direction:column;">
-        <button class="bb-btn bb-btn-primary" onclick="bbOpen('borrow')">📦 Borrow a Game</button>
-        <button class="bb-btn bb-btn-purple" onclick="bbOpen('${isAdmin ? "admin" : "pin"}')">
-          ${isAdmin ? "⚙️ Admin Panel" : "🔐 Admin Login"}
-        </button>
-        <button class="bb-btn bb-btn-secondary" onclick="bbClose()">Close</button>
-      </div>
+  // ---- THE BORROWED BOARD — lending overlay ----
+  window.addEventListener("load", function () {
+
+    const ADMIN_PIN = "2485";
+    const STORAGE_KEY_BORROWED = "borrowedBoard_borrowed";
+    const STORAGE_KEY_LOG = "borrowedBoard_log";
+
+    let borrowed = JSON.parse(localStorage.getItem(STORAGE_KEY_BORROWED) || "{}");
+    let log = JSON.parse(localStorage.getItem(STORAGE_KEY_LOG) || "[]");
+    let isAdmin = false;
+    let activeBorrowName = null;
+
+    // ---- INJECT CSS ----
+    const style = document.createElement("style");
+    style.textContent = `
+      .bb-badge { display: inline-block; font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.55rem; border-radius: 6px; margin-top: 6px; letter-spacing: 0.03em; pointer-events: none; }
+      .bb-badge-available { background: #d4f7ec; color: #0a7a56; }
+      .bb-badge-borrowed  { background: #fde0e0; color: #b81c1c; }
+      #bb-fab { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 900; background: #6C5CE7; color: #fff; border: none; border-radius: 50px; padding: 0.75rem 1.3rem; font-size: 0.95rem; font-weight: 800; cursor: pointer; box-shadow: 0 4px 18px rgba(108,92,231,0.45); display: flex; align-items: center; gap: 0.5rem; transition: transform 0.15s, box-shadow 0.15s; font-family: inherit; }
+      #bb-fab:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(108,92,231,0.5); }
+      #bb-fab.admin-mode { background: #FF4757; }
+      #bb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
+      #bb-overlay.open { display: flex; }
+      #bb-modal { background: #fff; border-radius: 18px; padding: 2rem; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.25); animation: bbPop 0.2s ease; font-family: inherit; }
+      @keyframes bbPop { from { transform: scale(0.88); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+      #bb-modal h2 { font-size: 1.4rem; font-weight: 900; margin-bottom: 0.25rem; color: #2d2d2d; }
+      #bb-modal .bb-subtitle { font-size: 0.88rem; color: #888; margin-bottom: 1.2rem; font-weight: 600; }
+      #bb-modal label { display: block; font-weight: 700; font-size: 0.88rem; margin: 0.9rem 0 0.3rem; color: #2d2d2d; }
+      #bb-modal input, #bb-modal select { width: 100%; border: 2px solid #e0e0e0; border-radius: 10px; padding: 0.6rem 0.85rem; font-size: 0.95rem; font-family: inherit; font-weight: 600; outline: none; transition: border-color 0.2s; box-sizing: border-box; }
+      #bb-modal input:focus, #bb-modal select:focus { border-color: #6C5CE7; }
+      .bb-actions { display: flex; gap: 0.6rem; margin-top: 1.4rem; flex-wrap: wrap; }
+      .bb-btn { flex: 1; min-width: 100px; border: none; border-radius: 10px; padding: 0.65rem 1rem; font-family: inherit; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: transform 0.1s; }
+      .bb-btn:hover { transform: translateY(-2px); }
+      .bb-btn-primary { background: #1DD1A1; color: #fff; }
+      .bb-btn-danger { background: #FF4757; color: #fff; }
+      .bb-btn-secondary { background: #f0f0f0; color: #2d2d2d; }
+      .bb-btn-purple { background: #6C5CE7; color: #fff; }
+      .bb-game-list { max-height: 280px; overflow-y: auto; border: 2px solid #e0e0e0; border-radius: 10px; margin-top: 0.5rem; }
+      .bb-game-item { padding: 0.6rem 0.9rem; cursor: pointer; font-size: 0.9rem; font-weight: 600; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; transition: background 0.1s; }
+      .bb-game-item:last-child { border-bottom: none; }
+      .bb-game-item:hover { background: #f5f3ff; }
+      .bb-game-item.selected { background: #ede9ff; }
+      .bb-game-item .bb-game-status { font-size: 0.72rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 6px; }
+      .bb-log-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 0.75rem; }
+      .bb-log-table th { background: #6C5CE7; color: #fff; padding: 0.5rem 0.7rem; text-align: left; font-weight: 800; }
+      .bb-log-table td { padding: 0.5rem 0.7rem; border-bottom: 1px solid #f0f0f0; color: #2d2d2d; }
+      .bb-log-table tr:last-child td { border-bottom: none; }
+      .bb-log-table tr:hover td { background: #fafafa; }
+      .bb-log-empty { text-align: center; color: #aaa; padding: 1.5rem; font-size: 0.9rem; }
+      .bb-pin-display { font-size: 2rem; text-align: center; letter-spacing: 0.5rem; margin: 0.75rem 0; color: #2d2d2d; font-weight: 900; min-height: 2.5rem; }
+      .bb-pin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
+      .bb-pin-btn { background: #f5f3ff; border: 2px solid #e0e0e0; border-radius: 10px; padding: 0.9rem; font-size: 1.2rem; font-weight: 800; cursor: pointer; font-family: inherit; transition: background 0.1s; }
+      .bb-pin-btn:hover { background: #ede9ff; border-color: #6C5CE7; }
+      .bb-pin-error { color: #FF4757; text-align: center; font-size: 0.85rem; font-weight: 700; margin-top: 0.5rem; min-height: 1.2rem; }
+      .bb-borrowed-item { background: #fff8f8; border: 2px solid #fde0e0; border-radius: 10px; padding: 0.7rem 1rem; margin-bottom: 0.6rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+      .bb-borrowed-info { font-size: 0.88rem; font-weight: 700; color: #2d2d2d; }
+      .bb-borrowed-info span { display: block; font-size: 0.78rem; color: #888; font-weight: 600; }
+      #bb-toast { position: fixed; bottom: 5rem; left: 50%; transform: translateX(-50%) translateY(80px); background: #2d2d2d; color: #fff; padding: 0.7rem 1.4rem; border-radius: 30px; font-weight: 700; font-size: 0.9rem; z-index: 1100; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); pointer-events: none; white-space: nowrap; }
+      #bb-toast.show { transform: translateX(-50%) translateY(0); }
     `;
-  }
- 
-  // ---- BORROW SCREEN ----
-  function renderBorrow() {
-    const games = getGames();
-    const search = `<input type="text" id="bb-search" placeholder="🔍 Search games..." oninput="bbFilterGames()" style="margin-bottom:0.5rem;">`;
-    const listItems = games.map(name => {
-      const isBorrowed = borrowed[name];
-      const statusHtml = isBorrowed
-        ? `<span class="bb-game-status" style="background:#fde0e0;color:#b81c1c;">Out</span>`
-        : `<span class="bb-game-status" style="background:#d4f7ec;color:#0a7a56;">In</span>`;
-      return `<div class="bb-game-item ${activeBorrowName === name ? "selected" : ""} ${isBorrowed ? "bb-is-borrowed" : ""}"
-        data-name="${escAttr(name)}"
-        onclick="bbSelectGame('${escAttr(name)}')"
-      >${escHtml(name)} ${statusHtml}</div>`;
-    }).join("");
- 
-    return `
-      <h2>📦 Borrow a Game</h2>
-      <p class="bb-subtitle">Select a game, then enter your name and email.</p>
-      ${search}
-      <div class="bb-game-list" id="bb-game-list">${listItems || '<div class="bb-log-empty">No games found</div>'}</div>
-      <label>Your Name</label>
-      <input type="text" id="bb-bname" placeholder="Jane Smith" />
-      <label>Your Email</label>
-      <input type="email" id="bb-bemail" placeholder="jane@example.com" />
-      <div class="bb-actions">
-        <button class="bb-btn bb-btn-secondary" onclick="bbOpen('main')">← Back</button>
-        <button class="bb-btn bb-btn-primary" onclick="bbConfirmBorrow()">Confirm Borrow ✅</button>
-      </div>
-    `;
-  }
- 
-  window.bbFilterGames = function () {
-    const q = document.getElementById("bb-search").value.toLowerCase();
-    document.querySelectorAll(".bb-game-item").forEach(el => {
-      el.style.display = el.dataset.name.toLowerCase().includes(q) ? "" : "none";
+    document.head.appendChild(style);
+
+    // ---- INJECT HTML ----
+    document.body.insertAdjacentHTML("beforeend", `
+      <button id="bb-fab" onclick="bbOpen('main')">🎲 Borrow / Admin</button>
+      <div id="bb-overlay"><div id="bb-modal"></div></div>
+      <div id="bb-toast"></div>
+    `);
+
+    // ---- SAVE ----
+    function save() {
+      localStorage.setItem(STORAGE_KEY_BORROWED, JSON.stringify(borrowed));
+      localStorage.setItem(STORAGE_KEY_LOG, JSON.stringify(log));
+    }
+
+    // ---- TOAST ----
+    function toast(msg) {
+      const t = document.getElementById("bb-toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 3000);
+    }
+
+    // ---- MODAL ----
+    window.bbOpen = function (screen) {
+      document.getElementById("bb-overlay").classList.add("open");
+      bbRender(screen);
+    };
+    window.bbClose = function () {
+      document.getElementById("bb-overlay").classList.remove("open");
+      activeBorrowName = null;
+    };
+    document.getElementById("bb-overlay").addEventListener("click", function (e) {
+      if (e.target === this) bbClose();
     });
-  };
- 
-  window.bbSelectGame = function (name) {
-    if (borrowed[name]) { toast("That game is already borrowed!"); return; }
-    activeBorrowName = name;
-    document.querySelectorAll(".bb-game-item").forEach(el => {
-      el.classList.toggle("selected", el.dataset.name === name);
-    });
-  };
- 
-  window.bbConfirmBorrow = function () {
-    if (!activeBorrowName) { toast("Please select a game first!"); return; }
-    const name = document.getElementById("bb-bname").value.trim();
-    const email = document.getElementById("bb-bemail").value.trim();
-    if (!name || !email) { toast("Please enter your name and email!"); return; }
-    if (!email.includes("@")) { toast("Please enter a valid email address!"); return; }
-    const dateOut = new Date().toLocaleDateString();
-    borrowed[activeBorrowName] = { name, email, dateOut };
-    log.push({ game: activeBorrowName, name, email, dateOut, dateIn: null });
-    save();
-    updateBadges();
-    activeBorrowName = null;
-    toast(`"${activeBorrowName || name}" borrowed! Have fun 🎉`);
-    bbOpen("main");
-  };
- 
-  // ---- PIN SCREEN ----
-  let pinEntry = "";
-  function renderPin() {
-    return `
-      <h2>🔐 Admin Login</h2>
-      <p class="bb-subtitle">Enter your 4-digit PIN to access admin features.</p>
-      <div class="bb-pin-display" id="bb-pin-display">····</div>
-      <div class="bb-pin-grid">
-        ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="bb-pin-btn" onclick="bbPin('${n}')">${n}</button>`).join("")}
-        <button class="bb-pin-btn" onclick="bbPin('clear')">⌫</button>
-        <button class="bb-pin-btn" onclick="bbPin('0')">0</button>
-        <button class="bb-pin-btn" onclick="bbPin('enter')">✓</button>
-      </div>
-      <div class="bb-pin-error" id="bb-pin-error"></div>
-      <div class="bb-actions">
-        <button class="bb-btn bb-btn-secondary" onclick="bbOpen('main')">← Back</button>
-      </div>
-    `;
-  }
- 
-  window.bbPin = function (val) {
-    if (val === "clear") {
-      pinEntry = pinEntry.slice(0, -1);
-    } else if (val === "enter") {
-      if (pinEntry === ADMIN_PIN) {
-        isAdmin = true;
-        pinEntry = "";
-        document.getElementById("bb-fab").classList.add("admin-mode");
-        bbOpen("admin");
-      } else {
-        document.getElementById("bb-pin-error").textContent = "Incorrect PIN. Try again.";
-        pinEntry = "";
-      }
-    } else {
-      if (pinEntry.length < 4) pinEntry += val;
+
+    function bbRender(screen) {
+      const modal = document.getElementById("bb-modal");
+      if (screen === "main")  modal.innerHTML = renderMain();
+      if (screen === "borrow") modal.innerHTML = renderBorrow();
+      if (screen === "pin")   modal.innerHTML = renderPin();
+      if (screen === "admin") modal.innerHTML = renderAdmin();
+      if (screen === "log")   modal.innerHTML = renderLog();
     }
-    const display = document.getElementById("bb-pin-display");
-    if (display) display.textContent = "●".repeat(pinEntry.length) + "·".repeat(4 - pinEntry.length);
-  };
- 
-  // ---- ADMIN SCREEN ----
-  function renderAdmin() {
-    const borrowedEntries = Object.entries(borrowed);
-    const borrowedHtml = borrowedEntries.length === 0
-      ? `<div class="bb-log-empty">No games currently borrowed 🎉</div>`
-      : borrowedEntries.map(([game, info]) => `
-          <div class="bb-borrowed-item">
-            <div class="bb-borrowed-info">
-              📦 ${escHtml(game)}
-              <span>By ${escHtml(info.name)} (${escHtml(info.email)}) · Out since ${info.dateOut}</span>
-            </div>
-            <button class="bb-btn bb-btn-danger" style="flex:0;min-width:80px;font-size:0.8rem;" onclick="bbReturn('${escAttr(game)}')">Return 🔄</button>
-          </div>
-        `).join("");
- 
-    return `
-      <h2>⚙️ Admin Panel</h2>
-      <p class="bb-subtitle">Manage borrowed games. PIN-protected.</p>
-      <h3 style="font-size:1rem;font-weight:800;margin-bottom:0.5rem;">Currently Borrowed</h3>
-      ${borrowedHtml}
-      <div class="bb-actions">
-        <button class="bb-btn bb-btn-secondary" onclick="bbOpen('main')">← Back</button>
-        <button class="bb-btn bb-btn-purple" onclick="bbOpen('log')">📋 View Log</button>
-        <button class="bb-btn bb-btn-secondary" onclick="bbLogout()">🔒 Lock</button>
-      </div>
-    `;
-  }
- 
-  window.bbReturn = function (game) {
-    if (!borrowed[game]) return;
-    const dateIn = new Date().toLocaleDateString();
-    for (let i = log.length - 1; i >= 0; i--) {
-      if (log[i].game === game && !log[i].dateIn) { log[i].dateIn = dateIn; break; }
+
+    // ---- MAIN ----
+    function renderMain() {
+      const count = Object.keys(borrowed).length;
+      return `
+        <h2>🎲 The Borrowed Board</h2>
+        <p class="bb-subtitle">${count > 0 ? `${count} game${count !== 1 ? "s" : ""} currently borrowed` : "All games are available!"}</p>
+        <div class="bb-actions" style="flex-direction:column;">
+          <button class="bb-btn bb-btn-primary" onclick="bbOpen('borrow')">📦 Borrow a Game</button>
+          <button class="bb-btn bb-btn-purple" onclick="bbOpen('${isAdmin ? "admin" : "pin"}')">
+            ${isAdmin ? "⚙️ Admin Panel" : "🔐 Admin Login"}
+          </button>
+          <button class="bb-btn bb-btn-secondary" onclick="bbClose()">Close</button>
+        </div>`;
     }
-    delete borrowed[game];
-    save();
-    updateBadges();
-    toast(`"${game}" returned! Back on the shelf 🎲`);
-    bbOpen("admin");
-  };
- 
-  window.bbLogout = function () {
-    isAdmin = false;
-    pinEntry = "";
-    document.getElementById("bb-fab").classList.remove("admin-mode");
-    bbOpen("main");
-  };
- 
-  // ---- LOG SCREEN ----
-  function renderLog() {
-    const rows = [...log].reverse().map(e => `
-      <tr>
-        <td>${escHtml(e.game)}</td>
-        <td>${escHtml(e.name)}</td>
-        <td>${escHtml(e.email)}</td>
-        <td>${e.dateOut}</td>
-        <td>${e.dateIn || "—"}</td>
-      </tr>
-    `).join("");
- 
-    return `
-      <h2>📋 Borrow Log</h2>
-      <p class="bb-subtitle">Full history of all checkouts.</p>
-      ${log.length === 0
-        ? `<div class="bb-log-empty">No borrowing history yet!</div>`
-        : `<div style="overflow-x:auto;"><table class="bb-log-table">
-            <thead><tr><th>Game</th><th>Borrower</th><th>Email</th><th>Out</th><th>In</th></tr></thead>
-            <tbody>${rows}</tbody>
-          </table></div>`
-      }
-      <div class="bb-actions">
-        <button class="bb-btn bb-btn-secondary" onclick="bbOpen('admin')">← Back</button>
-        ${log.length > 0 ? `<button class="bb-btn bb-btn-danger" onclick="bbClearLog()">🗑 Clear Log</button>` : ""}
-      </div>
-    `;
-  }
- 
-  window.bbClearLog = function () {
-    if (confirm("Clear the entire borrow log? This cannot be undone.")) {
-      log = [];
+
+    // ---- BORROW ----
+    function renderBorrow() {
+      const games = getGames();
+      const listItems = games.map(name => {
+        const isBorrowed = borrowed[name];
+        const statusHtml = isBorrowed
+          ? `<span class="bb-game-status" style="background:#fde0e0;color:#b81c1c;">Out</span>`
+          : `<span class="bb-game-status" style="background:#d4f7ec;color:#0a7a56;">In</span>`;
+        return `<div class="bb-game-item ${activeBorrowName === name ? "selected" : ""}"
+          data-name="${escAttr(name)}" onclick="bbSelectGame('${escAttr(name)}')"
+        >${escHtml(name)} ${statusHtml}</div>`;
+      }).join("");
+      return `
+        <h2>📦 Borrow a Game</h2>
+        <p class="bb-subtitle">Select a game, then enter your name and email.</p>
+        <input type="text" id="bb-search" placeholder="🔍 Search games..." oninput="bbFilterGames()" style="margin-bottom:0.5rem;">
+        <div class="bb-game-list" id="bb-game-list">${listItems || '<div class="bb-log-empty">No games found</div>'}</div>
+        <label>Your Name</label>
+        <input type="text" id="bb-bname" placeholder="Jane Smith" />
+        <label>Your Email</label>
+        <input type="email" id="bb-bemail" placeholder="jane@example.com" />
+        <div class="bb-actions">
+          <button class="bb-btn bb-btn-secondary" onclick="bbOpen('main')">← Back</button>
+          <button class="bb-btn bb-btn-primary" onclick="bbConfirmBorrow()">Confirm Borrow ✅</button>
+        </div>`;
+    }
+
+    window.bbFilterGames = function () {
+      const q = document.getElementById("bb-search").value.toLowerCase();
+      document.querySelectorAll(".bb-game-item").forEach(el => {
+        el.style.display = el.dataset.name.toLowerCase().includes(q) ? "" : "none";
+      });
+    };
+
+    window.bbSelectGame = function (name) {
+      if (borrowed[name]) { toast("That game is already borrowed!"); return; }
+      activeBorrowName = name;
+      document.querySelectorAll(".bb-game-item").forEach(el => {
+        el.classList.toggle("selected", el.dataset.name === name);
+      });
+    };
+
+    window.bbConfirmBorrow = function () {
+      if (!activeBorrowName) { toast("Please select a game first!"); return; }
+      const name = document.getElementById("bb-bname").value.trim();
+      const email = document.getElementById("bb-bemail").value.trim();
+      if (!name || !email) { toast("Please enter your name and email!"); return; }
+      if (!email.includes("@")) { toast("Please enter a valid email!"); return; }
+      const dateOut = new Date().toLocaleDateString();
+      const gameName = activeBorrowName;
+      borrowed[gameName] = { name, email, dateOut };
+      log.push({ game: gameName, name, email, dateOut, dateIn: null });
       save();
-      toast("Log cleared.");
-      bbOpen("log");
+      updateBadges();
+      activeBorrowName = null;
+      toast(`"${gameName}" borrowed by ${name}! Have fun 🎉`);
+      bbOpen("main");
+    };
+
+    // ---- PIN ----
+    let pinEntry = "";
+    function renderPin() {
+      return `
+        <h2>🔐 Admin Login</h2>
+        <p class="bb-subtitle">Enter your 4-digit PIN to access admin features.</p>
+        <div class="bb-pin-display" id="bb-pin-display">····</div>
+        <div class="bb-pin-grid">
+          ${[1,2,3,4,5,6,7,8,9].map(n => `<button class="bb-pin-btn" onclick="bbPin('${n}')">${n}</button>`).join("")}
+          <button class="bb-pin-btn" onclick="bbPin('clear')">⌫</button>
+          <button class="bb-pin-btn" onclick="bbPin('0')">0</button>
+          <button class="bb-pin-btn" onclick="bbPin('enter')">✓</button>
+        </div>
+        <div class="bb-pin-error" id="bb-pin-error"></div>
+        <div class="bb-actions">
+          <button class="bb-btn bb-btn-secondary" onclick="bbOpen('main')">← Back</button>
+        </div>`;
     }
-  };
- 
-  // ---- BADGES ON GAME CARDS ----
-  function getGames() {
-    // GameCache renders game names in various elements — collect them
-    const names = new Set();
-    document.querySelectorAll(".game-name, .name, h3, h2, [class*='title']").forEach(el => {
-      const txt = el.textContent.trim();
-      if (txt.length > 1 && txt.length < 120) names.add(txt);
-    });
-    return [...names].sort();
-  }
- 
-  function updateBadges() {
-    // Find all game cards and inject/update badges
-    const cards = document.querySelectorAll(".game, .game-card, .card, [class*='game']");
-    cards.forEach(card => {
-      // Find the name element within this card
-      const nameEl = card.querySelector(".game-name, .name, h3, h2, [class*='title']");
-      if (!nameEl) return;
-      const gameName = nameEl.textContent.trim();
- 
-      // Remove existing badge
-      const existing = card.querySelector(".bb-badge");
-      if (existing) existing.remove();
- 
-      // Add new badge
-      const badge = document.createElement("div");
-      badge.className = `bb-badge ${borrowed[gameName] ? "bb-badge-borrowed" : "bb-badge-available"}`;
-      badge.textContent = borrowed[gameName]
-        ? `📦 Out — ${borrowed[gameName].name}`
-        : "✅ Available";
- 
-      // Insert badge after name element
-      nameEl.insertAdjacentElement("afterend", badge);
-    });
-  }
- 
-  // ---- WATCH FOR GAMECACHE RENDERING ----
-  // GameCache loads games dynamically, so we watch for DOM changes
-  const observer = new MutationObserver(() => {
-    updateBadges();
-  });
-  observer.observe(document.body, { childList: true, subtree: true });
- 
-  // Also run on load
-  setTimeout(updateBadges, 1500);
-  setTimeout(updateBadges, 4000);
- 
-  // ---- UTILS ----
-  function escHtml(str) {
-    return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  }
-  function escAttr(str) {
-    return String(str).replace(/'/g, "\\'").replace(/"/g, "&quot;");
-  }
- 
-});
+
+    window.bbPin = function (val) {
+      if (val === "clear") {
+        pinEntry = pinEntry.slice(0, -1);
+      } else if (val === "enter") {
+        if (pinEntry === ADMIN_PIN) {
+          isAdmin = true; pinEntry = "";
+          document.getElementById("bb-fab").classList.add("admin-mode");
+          bbOpen("admin");
+        } else {
+          document.getElementById("bb-pin-error").textContent = "Incorrect PIN. Try again.";
+          pinEntry = "";
+        }
+      } else {
+        if (pinEntry.length < 4) pinEntry += val;
+      }
+      const display = document.getElementById("bb-pin-display");
+      if (display) display.textContent = "●".repeat(pinEntry.length) + "·".repeat(4 - pinEntry.length);
+    };
+
+    // ---- ADMIN ----
+    function renderAdmin() {
+      const entries = Object.entries(borrowed);
+      const html = entries.length === 0
+        ? `<div class="bb-log-empty">No games currently borrowed 🎉</div>`
+        : entries.map(([game, info]) => `
+            <div class="bb-borrowed-item">
+              <div class="bb-borrowed-info">📦 ${escHtml(game)}
+                <span>By ${escHtml(info.name)} (${escHtml(info.email)}) · Out since ${info.dateOut}</span>
+              </div>
+              <button class="bb-btn bb-btn-danger" style="flex:0;min-width:80px;font-size:0.8rem;" onclick="bbReturn('${escAttr(game)}')">Return 🔄</button>
+            </div>`).join("");
+      return `
+        <h2>⚙️ Admin Panel</h2>
+        <p class="bb-subtitle">Manage borrowed games. PIN-protected.</p>
+        <h3 style="font-size:1rem;font-weight:800;margin-bottom:0.5rem;">Currently Borrowed</h3>
+        ${html}
+        <div class="bb-actions">
+          <button class="bb-btn bb-btn-secondary" onclick="bbOpen('main')">← Back</button>
+          <button class="bb-btn bb-btn-purple" onclick="bbOpen('log')">📋 View Log</button>
+          <button class="bb-btn bb-btn-secondary" onclick="bbLogout()">🔒 Lock</button>
+        </div>`;
+    }
+
+    window.bbReturn = function (game) {
+      if (!borrowed[game]) return;
+      const dateIn = new Date().toLocaleDateString();
+      for (let i = log.length - 1; i >= 0; i--) {
+        if (log[i].game === game && !log[i].dateIn) { log[i].dateIn = dateIn; break; }
+      }
+      delete borrowed[game];
+      save(); updateBadges();
+      toast(`"${game}" returned! Back on the shelf 🎲`);
+      bbOpen("admin");
+    };
+
+    window.bbLogout = function () {
+      isAdmin = false; pinEntry = "";
+      document.getElementById("bb-fab").classList.remove("admin-mode");
+      bbOpen("main");
+    };
+
+    // ---- LOG ----
+    function renderLog() {
+      const rows = [...log].reverse().map(e => `
+        <tr>
+          <td>${escHtml(e.game)}</td><td>${escHtml(e.name)}</td>
+          <td>${escHtml(e.email)}</td><td>${e.dateOut}</td><td>${e.dateIn || "—"}</td>
+        </tr>`).join("");
+      return `
+        <h2>📋 Borrow Log</h2>
+        <p class="bb-subtitle">Full history of all checkouts.</p>
+        ${log.length === 0
+          ? `<div class="bb-log-empty">No borrowing history yet!</div>`
+          : `<div style="overflow-x:auto;"><table class="bb-log-table">
+              <thead><tr><th>Game</th><th>Borrower</th><th>Email</th><th>Out</th><th>In</th></tr></thead>
+              <tbody>${rows}</tbody>
+            </table></div>`}
+        <div class="bb-actions">
+          <button class="bb-btn bb-btn-secondary" onclick="bbOpen('admin')">← Back</button>
+          ${log.length > 0 ? `<button class="bb-btn bb-btn-danger" onclick="bbClearLog()">🗑 Clear Log</button>` : ""}
+        </div>`;
+    }
+
+    window.bbClearLog = function () {
+      if (confirm("Clear the entire borrow log? This cannot be undone.")) {
+        log = []; save(); toast("Log cleared."); bbOpen("log");
+      }
+    };
+
+    // ---- BADGES ----
+    function getGames() {
+      const names = new Set();
+      document.querySelectorAll(".game-title").forEach(el => {
+        const txt = el.textContent.trim();
+        if (txt.length > 1 && txt.length < 120) names.add(txt);
+      });
+      return [...names].sort();
+    }
+
+    function updateBadges() {
+      document.querySelectorAll(".game-card").forEach(card => {
+        const nameEl = card.querySelector(".game-title");
+        if (!nameEl) return;
+        const gameName = nameEl.textContent.trim();
+        const existing = card.querySelector(".bb-badge");
+        if (existing) existing.remove();
+        const badge = document.createElement("div");
+        badge.className = `bb-badge ${borrowed[gameName] ? "bb-badge-borrowed" : "bb-badge-available"}`;
+        badge.textContent = borrowed[gameName] ? `📦 Out — ${borrowed[gameName].name}` : "✅ Available";
+        nameEl.insertAdjacentElement("afterend", badge);
+      });
+    }
+
+    const observer = new MutationObserver(() => { updateBadges(); });
+    observer.observe(document.body, { childList: true, subtree: true });
+    setTimeout(updateBadges, 2000);
+    setTimeout(updateBadges, 5000);
+
+    // ---- UTILS ----
+    function escHtml(str) {
+      return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+    function escAttr(str) {
+      return String(str).replace(/'/g, "\\'").replace(/"/g, "&quot;");
+    }
+
+  }); // end window.addEventListener("load", ...)
   </script>
 </body>
 </html>
