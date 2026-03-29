@@ -202,7 +202,7 @@
 
   <script src="app-sqlite.js"></script>
   <script>
-  (function () {
+ window.addEventListener("load", function () {
   const ADMIN_PIN = "2485";
   const STORAGE_KEY_BORROWED = "borrowedBoard_borrowed";
   const STORAGE_KEY_LOG = "borrowedBoard_log";
@@ -772,7 +772,7 @@
     return String(str).replace(/'/g, "\\'").replace(/"/g, "&quot;");
   }
  
-})();
+});
   </script>
 </body>
 </html>
