@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>The Borrowed Board</title>
+  <title>All my boardgames</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=0.7">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20fill%3D%22%23b71c1c%22%3E%3Cpath%20d%3D%22M256%2054.99c-27%200-46.418%2014.287-57.633%2032.23-10.03%2016.047-14.203%2034.66-15.017%2050.962-30.608%2015.135-64.515%2030.394-91.815%2045.994-14.32%208.183-26.805%2016.414-36.203%2025.26C45.934%20218.28%2039%20228.24%2039%20239.99c0%205%202.44%209.075%205.19%2012.065%202.754%202.99%206.054%205.312%209.812%207.48%207.515%204.336%2016.99%207.95%2027.412%2011.076%2015.483%204.646%2032.823%208.1%2047.9%209.577-14.996%2025.84-34.953%2049.574-52.447%2072.315C56.65%20378.785%2039%20403.99%2039%20431.99c0%204-.044%207.123.31%2010.26.355%203.137%201.256%207.053%204.41%2010.156%203.155%203.104%207.017%203.938%2010.163%204.28%203.146.345%206.315.304%2010.38.304h111.542c8.097%200%2014.026.492%2020.125-3.43%206.1-3.92%208.324-9.275%2012.67-17.275l.088-.16.08-.166s9.723-19.77%2021.324-39.388c5.8-9.808%2012.097-19.576%2017.574-26.498%202.74-3.46%205.304-6.204%207.15-7.754.564-.472.82-.56%201.184-.76.363.2.62.288%201.184.76%201.846%201.55%204.41%204.294%207.15%207.754%205.477%206.922%2011.774%2016.69%2017.574%2026.498%2011.6%2019.618%2021.324%2039.387%2021.324%2039.387l.08.165.088.16c4.346%208%206.55%2013.323%2012.61%2017.254%206.058%203.93%2011.974%203.45%2019.957%203.45H448c4%200%207.12.043%2010.244-.304%203.123-.347%206.998-1.21%2010.12-4.332%203.12-3.122%203.984-6.997%204.33-10.12.348-3.122.306-6.244.306-10.244%200-28-17.65-53.205-37.867-79.488-17.493-22.74-37.45-46.474-52.447-72.315%2015.077-1.478%2032.417-4.93%2047.9-9.576%2010.422-3.125%2019.897-6.74%2027.412-11.075%203.758-2.168%207.058-4.49%209.81-7.48%202.753-2.99%205.192-7.065%205.192-12.065%200-11.75-6.934-21.71-16.332-30.554-9.398-8.846-21.883-17.077-36.203-25.26-27.3-15.6-61.207-30.86-91.815-45.994-.814-16.3-4.988-34.915-15.017-50.96C302.418%2069.276%20283%2054.99%20256%2054.99z%22%2F%3E%3C%2Fsvg%3E">
@@ -11,6 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
 </head>
+
 <body>
   <header class="search">
     <img class="logo" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20fill%3D%22%23b71c1c%22%3E%3Cpath%20d%3D%22M256%2054.99c-27%200-46.418%2014.287-57.633%2032.23-10.03%2016.047-14.203%2034.66-15.017%2050.962-30.608%2015.135-64.515%2030.394-91.815%2045.994-14.32%208.183-26.805%2016.414-36.203%2025.26C45.934%20218.28%2039%20228.24%2039%20239.99c0%205%202.44%209.075%205.19%2012.065%202.754%202.99%206.054%205.312%209.812%207.48%207.515%204.336%2016.99%207.95%2027.412%2011.076%2015.483%204.646%2032.823%208.1%2047.9%209.577-14.996%2025.84-34.953%2049.574-52.447%2072.315C56.65%20378.785%2039%20403.99%2039%20431.99c0%204-.044%207.123.31%2010.26.355%203.137%201.256%207.053%204.41%2010.156%203.155%203.104%207.017%203.938%2010.163%204.28%203.146.345%206.315.304%2010.38.304h111.542c8.097%200%2014.026.492%2020.125-3.43%206.1-3.92%208.324-9.275%2012.67-17.275l.088-.16.08-.166s9.723-19.77%2021.324-39.388c5.8-9.808%2012.097-19.576%2017.574-26.498%202.74-3.46%205.304-6.204%207.15-7.754.564-.472.82-.56%201.184-.76.363.2.62.288%201.184.76%201.846%201.55%204.41%204.294%207.15%207.754%205.477%206.922%2011.774%2016.69%2017.574%2026.498%2011.6%2019.618%2021.324%2039.387%2021.324%2039.387l.08.165.088.16c4.346%208%206.55%2013.323%2012.61%2017.254%206.058%203.93%2011.974%203.45%2019.957%203.45H448c4%200%207.12.043%2010.244-.304%203.123-.347%206.998-1.21%2010.12-4.332%203.12-3.122%203.984-6.997%204.33-10.12.348-3.122.306-6.244.306-10.244%200-28-17.65-53.205-37.867-79.488-17.493-22.74-37.45-46.474-52.447-72.315%2015.077-1.478%2032.417-4.93%2047.9-9.576%2010.422-3.125%2019.897-6.74%2027.412-11.075%203.758-2.168%207.058-4.49%209.81-7.48%202.753-2.99%205.192-7.065%205.192-12.065%200-11.75-6.934-21.71-16.332-30.554-9.398-8.846-21.883-17.077-36.203-25.26-27.3-15.6-61.207-30.86-91.815-45.994-.814-16.3-4.988-34.915-15.017-50.96C302.418%2069.276%20283%2054.99%20256%2054.99z%22%2F%3E%3C%2Fsvg%3E" alt="Red meeple logo" height="36" width="36">
@@ -68,7 +69,6 @@
             <span class="material-symbols-rounded icon-small">close</span>
           </button>
         </div>
-
         <div class="stats-bar">
           <div class="stat-item playing-time-stat" style="display: none;">
             <span class="material-symbols-rounded icon-themed">schedule</span>
@@ -87,22 +87,17 @@
             <span class="min-age-value"></span>
           </div>
         </div>
-
         <div class="description-section">
-          <div class="teaser-text" data-full-text="">
-          </div>
+          <div class="teaser-text" data-full-text=""></div>
         </div>
-
         <div class="tags-section">
           <h2>Mechanics</h2>
           <div class="mechanic-chips-container"></div>
         </div>
-
         <div class="expansions-section" style="display: none;">
           <h2>Expansions</h2>
           <div class="expansion-chips"></div>
         </div>
-
         <div class="bottom-info">
           <div class="stat-item rating-section" style="display: none;">
             <div class="rating-gauge-container"></div>
@@ -128,15 +123,12 @@
   <template id="expansion-chip-template">
     <a href="" target="_blank" class="expansion-chip"></a>
   </template>
-
   <template id="category-chip-template">
     <span class="tag-chip category-chip"></span>
   </template>
-
   <template id="mechanic-chip-template">
     <span class="tag-chip mechanic-chip"></span>
   </template>
-
   <template id="complexity-gauge-template">
     <svg class="complexity-gauge" width="24" height="24" viewBox="0 0 24 24" style="display: block;">
       <circle class="gauge-bg" cx="12" cy="12" r="10" />
@@ -144,7 +136,6 @@
       <text class="gauge-text" x="12" y="12" dy=".3em"></text>
     </svg>
   </template>
-
   <template id="rating-gauge-template">
     <svg class="complexity-gauge rating-gauge" width="24" height="24" viewBox="0 0 24 24" style="display: block;">
       <circle class="gauge-bg" cx="12" cy="12" r="10" />
@@ -152,53 +143,391 @@
       <text class="gauge-text" x="12" y="12" dy=".3em"></text>
     </svg>
   </template>
-
   <template id="error-template">
     <div class="error">
       <h2>⚠️ Database Loading Error</h2>
       <pre class="error-message"></pre>
     </div>
   </template>
-
   <template id="no-results-template">
     <div class="no-results">No games found matching your criteria.</div>
   </template>
-
   <template id="pagination-template">
     <div class="pagination"></div>
   </template>
-
   <template id="pagination-button-template">
     <button class="pagination-btn"></button>
   </template>
-
   <template id="pagination-ellipsis-template">
     <span>...</span>
   </template>
-
   <template id="tag-chips-container-template">
     <div class="tag-chips"></div>
   </template>
-
   <template id="more-button-template">
     <button class="more-button" onclick="handleMoreButtonClick(this)">more</button>
   </template>
-
   <template id="less-button-template">
     <button class="more-button" onclick="handleMoreButtonClick(this)">less</button>
   </template>
-
   <template id="filter-dropdown-template">
     <details class="filter-dropdown">
       <summary><span class="material-symbols-rounded icon-medium">filter_list</span> <span class="filter-title"></span></summary>
       <div class="filter-dropdown-content"></div>
     </details>
   </template>
-
   <template id="game-grid-template">
     <div class="game-grid"></div>
   </template>
 
   <script src="app-sqlite.js"></script>
+
+  <script>
+  // ==== THE BORROWED BOARD — Supabase-powered lending overlay ====
+  // Waits for GameCache to finish rendering before initializing.
+
+  const BB_SUPABASE_URL = "https://uhgltoavaurjdtmitflh.supabase.co";
+  const BB_SUPABASE_KEY = "sb_publishable_6iRV_CvCKF_2woEafPU8WQ_lbBO3-os";
+  const BB_ADMIN_PIN    = "2485";
+
+  let bbBorrowed       = {};   // { game_name: {name, email, dateOut, id} }
+  let bbLog            = [];
+  let bbIsAdmin        = false;
+  let bbActiveGame     = null;
+  let bbPinEntry       = "";
+
+  // ---- SUPABASE ----
+  async function bbSupabase(path, options = {}) {
+    const res = await fetch(BB_SUPABASE_URL + "/rest/v1/" + path, {
+      ...options,
+      headers: {
+        "apikey": BB_SUPABASE_KEY,
+        "Authorization": "Bearer " + BB_SUPABASE_KEY,
+        "Content-Type": "application/json",
+        "Prefer": options.prefer || "return=representation",
+        ...(options.headers || {})
+      }
+    });
+    const text = await res.text();
+    if (!res.ok) throw new Error(text);
+    return text ? JSON.parse(text) : null;
+  }
+
+  async function bbLoadBorrowed() {
+    try {
+      const rows = await bbSupabase("lending?select=*&status=eq.checked_out");
+      bbBorrowed = {};
+      (rows || []).forEach(r => {
+        bbBorrowed[r.game_name] = { name: r.borrower_name, email: r.borrower_email, dateOut: r.checked_out_at ? new Date(r.checked_out_at).toLocaleDateString() : "", id: r.id };
+      });
+    } catch(e) { console.error("BB load error:", e); }
+  }
+
+  async function bbLoadLog() {
+    try {
+      const rows = await bbSupabase("lending?select=*&order=id.desc&limit=200");
+      bbLog = rows || [];
+    } catch(e) { console.error("BB log error:", e); }
+  }
+
+  // ---- CSS ----
+  function bbInjectCSS() {
+    const s = document.createElement("style");
+    s.textContent = `
+      .bb-badge{display:inline-block;font-size:.7rem;font-weight:800;padding:.2rem .55rem;border-radius:6px;margin-top:6px;pointer-events:none;}
+      .bb-badge-available{background:#d4f7ec;color:#0a7a56;}
+      .bb-badge-borrowed{background:#fde0e0;color:#b81c1c;}
+      #bb-fab{position:fixed;bottom:1.5rem;right:1.5rem;z-index:900;background:#6C5CE7;color:#fff;border:none;border-radius:50px;padding:.75rem 1.3rem;font-size:.95rem;font-weight:800;cursor:pointer;box-shadow:0 4px 18px rgba(108,92,231,.45);display:flex;align-items:center;gap:.5rem;transition:transform .15s,box-shadow .15s;font-family:inherit;}
+      #bb-fab:hover{transform:translateY(-3px);}
+      #bb-fab.bb-admin{background:#FF4757;}
+      #bb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;padding:1rem;}
+      #bb-overlay.open{display:flex;}
+      #bb-modal{background:#fff;border-radius:18px;padding:2rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:bbPop .2s ease;font-family:inherit;}
+      @keyframes bbPop{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+      #bb-modal h2{font-size:1.4rem;font-weight:900;margin-bottom:.25rem;color:#2d2d2d;}
+      #bb-modal .bbs{font-size:.88rem;color:#888;margin-bottom:1.2rem;font-weight:600;}
+      #bb-modal label{display:block;font-weight:700;font-size:.88rem;margin:.9rem 0 .3rem;color:#2d2d2d;}
+      #bb-modal input{width:100%;border:2px solid #e0e0e0;border-radius:10px;padding:.6rem .85rem;font-size:.95rem;font-family:inherit;font-weight:600;outline:none;transition:border-color .2s;box-sizing:border-box;}
+      #bb-modal input:focus{border-color:#6C5CE7;}
+      .bb-actions{display:flex;gap:.6rem;margin-top:1.4rem;flex-wrap:wrap;}
+      .bb-btn{flex:1;min-width:100px;border:none;border-radius:10px;padding:.65rem 1rem;font-family:inherit;font-size:.95rem;font-weight:800;cursor:pointer;transition:transform .1s;}
+      .bb-btn:hover{transform:translateY(-2px);}
+      .bb-green{background:#1DD1A1;color:#fff;}
+      .bb-red{background:#FF4757;color:#fff;}
+      .bb-gray{background:#f0f0f0;color:#2d2d2d;}
+      .bb-purple{background:#6C5CE7;color:#fff;}
+      .bb-list{max-height:240px;overflow-y:auto;border:2px solid #e0e0e0;border-radius:10px;margin-top:.5rem;}
+      .bb-item{padding:.6rem .9rem;cursor:pointer;font-size:.9rem;font-weight:600;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between;transition:background .1s;}
+      .bb-item:last-child{border-bottom:none;}
+      .bb-item:hover{background:#f5f3ff;}
+      .bb-item.sel{background:#ede9ff;}
+      .bb-status{font-size:.72rem;font-weight:800;padding:.15rem .5rem;border-radius:6px;}
+      .bb-log-table{width:100%;border-collapse:collapse;font-size:.82rem;margin-top:.75rem;}
+      .bb-log-table th{background:#6C5CE7;color:#fff;padding:.5rem .7rem;text-align:left;font-weight:800;}
+      .bb-log-table td{padding:.5rem .7rem;border-bottom:1px solid #f0f0f0;color:#2d2d2d;}
+      .bb-log-table tr:last-child td{border-bottom:none;}
+      .bb-empty{text-align:center;color:#aaa;padding:1.5rem;font-size:.9rem;}
+      .bb-pin-disp{font-size:2rem;text-align:center;letter-spacing:.5rem;margin:.75rem 0;color:#2d2d2d;font-weight:900;min-height:2.5rem;}
+      .bb-pin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.5rem;}
+      .bb-pin-btn{background:#f5f3ff;border:2px solid #e0e0e0;border-radius:10px;padding:.9rem;font-size:1.2rem;font-weight:800;cursor:pointer;font-family:inherit;transition:background .1s;}
+      .bb-pin-btn:hover{background:#ede9ff;border-color:#6C5CE7;}
+      .bb-pin-err{color:#FF4757;text-align:center;font-size:.85rem;font-weight:700;margin-top:.5rem;min-height:1.2rem;}
+      .bb-out-item{background:#fff8f8;border:2px solid #fde0e0;border-radius:10px;padding:.7rem 1rem;margin-bottom:.6rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;}
+      .bb-out-info{font-size:.88rem;font-weight:700;color:#2d2d2d;}
+      .bb-out-info span{display:block;font-size:.78rem;color:#888;font-weight:600;}
+      #bb-toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%) translateY(80px);background:#2d2d2d;color:#fff;padding:.7rem 1.4rem;border-radius:30px;font-weight:700;font-size:.9rem;z-index:1100;transition:transform .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none;white-space:nowrap;}
+      #bb-toast.show{transform:translateX(-50%) translateY(0);}
+    `;
+    document.head.appendChild(s);
+  }
+
+  // ---- HTML ----
+  function bbInjectHTML() {
+    document.body.insertAdjacentHTML("beforeend", `
+      <button id="bb-fab" onclick="bbOpen('main')">🎲 Borrow / Admin</button>
+      <div id="bb-overlay"><div id="bb-modal"></div></div>
+      <div id="bb-toast"></div>
+    `);
+    document.getElementById("bb-overlay").addEventListener("click", e => { if (e.target.id === "bb-overlay") bbClose(); });
+  }
+
+  // ---- TOAST ----
+  function bbToast(msg) {
+    const t = document.getElementById("bb-toast");
+    t.textContent = msg; t.classList.add("show");
+    setTimeout(() => t.classList.remove("show"), 3500);
+  }
+
+  // ---- MODAL ----
+  window.bbOpen = function(screen) {
+    document.getElementById("bb-overlay").classList.add("open");
+    const m = document.getElementById("bb-modal");
+    if (screen === "main")   m.innerHTML = bbRenderMain();
+    if (screen === "borrow") m.innerHTML = bbRenderBorrow();
+    if (screen === "pin")    m.innerHTML = bbRenderPin();
+    if (screen === "admin")  m.innerHTML = bbRenderAdmin();
+    if (screen === "log")    m.innerHTML = bbRenderLog();
+  };
+  window.bbClose = function() {
+    document.getElementById("bb-overlay").classList.remove("open");
+    bbActiveGame = null;
+  };
+
+  // ---- SCREENS ----
+  function bbRenderMain() {
+    const n = Object.keys(bbBorrowed).length;
+    return `<h2>🎲 The Borrowed Board</h2>
+      <p class="bbs">${n > 0 ? n + " game" + (n!==1?"s":"") + " currently borrowed" : "All games are available!"}</p>
+      <div class="bb-actions" style="flex-direction:column;">
+        <button class="bb-btn bb-green" onclick="bbOpen('borrow')">📦 Borrow a Game</button>
+        <button class="bb-btn bb-purple" onclick="bbOpen('${bbIsAdmin?"admin":"pin"}')">${bbIsAdmin?"⚙️ Admin Panel":"🔐 Admin Login"}</button>
+        <button class="bb-btn bb-gray" onclick="bbClose()">Close</button>
+      </div>`;
+  }
+
+  function bbRenderBorrow() {
+    const games = bbGetGameNames();
+    const items = games.map(name => {
+      const out = bbBorrowed[name];
+      const status = out
+        ? `<span class="bb-status" style="background:#fde0e0;color:#b81c1c;">Out</span>`
+        : `<span class="bb-status" style="background:#d4f7ec;color:#0a7a56;">In</span>`;
+      return `<div class="bb-item${bbActiveGame===name?" sel":""}" data-name="${bbEA(name)}" onclick="bbSelectGame('${bbEA(name)}')">${bbEH(name)} ${status}</div>`;
+    }).join("");
+    return `<h2>📦 Borrow a Game</h2>
+      <p class="bbs">Select a game, then fill in your details.</p>
+      <input type="text" id="bb-search" placeholder="🔍 Search..." oninput="bbFilter()" style="margin-bottom:.5rem;">
+      <div class="bb-list">${items||'<div class="bb-empty">No games found</div>'}</div>
+      <label>Your Name</label><input type="text" id="bb-name" placeholder="Jane Smith">
+      <label>Your Email</label><input type="email" id="bb-email" placeholder="jane@example.com">
+      <div class="bb-actions">
+        <button class="bb-btn bb-gray" onclick="bbOpen('main')">← Back</button>
+        <button class="bb-btn bb-green" id="bb-confirm-btn" onclick="bbConfirmBorrow()">Confirm Borrow ✅</button>
+      </div>`;
+  }
+
+  function bbRenderPin() {
+    return `<h2>🔐 Admin Login</h2>
+      <p class="bbs">Enter your 4-digit PIN.</p>
+      <div class="bb-pin-disp" id="bb-pin-disp">····</div>
+      <div class="bb-pin-grid">
+        ${[1,2,3,4,5,6,7,8,9].map(n=>`<button class="bb-pin-btn" onclick="bbPin('${n}')">${n}</button>`).join("")}
+        <button class="bb-pin-btn" onclick="bbPin('clear')">⌫</button>
+        <button class="bb-pin-btn" onclick="bbPin('0')">0</button>
+        <button class="bb-pin-btn" onclick="bbPin('ok')">✓</button>
+      </div>
+      <div class="bb-pin-err" id="bb-pin-err"></div>
+      <div class="bb-actions"><button class="bb-btn bb-gray" onclick="bbOpen('main')">← Back</button></div>`;
+  }
+
+  function bbRenderAdmin() {
+    const entries = Object.entries(bbBorrowed);
+    const html = entries.length === 0
+      ? `<div class="bb-empty">No games currently borrowed 🎉</div>`
+      : entries.map(([game, info]) => `
+          <div class="bb-out-item">
+            <div class="bb-out-info">📦 ${bbEH(game)}<span>By ${bbEH(info.name)} · Out since ${info.dateOut}</span></div>
+            <button class="bb-btn bb-red" style="flex:0;min-width:80px;font-size:.8rem;" onclick="bbDoReturn('${bbEA(game)}')">Return 🔄</button>
+          </div>`).join("");
+    return `<h2>⚙️ Admin Panel</h2>
+      <p class="bbs">Manage checkouts. PIN-protected.</p>
+      <h3 style="font-size:1rem;font-weight:800;margin-bottom:.5rem;">Currently Out</h3>
+      ${html}
+      <div class="bb-actions">
+        <button class="bb-btn bb-gray" onclick="bbOpen('main')">← Back</button>
+        <button class="bb-btn bb-purple" onclick="bbOpenLog()">📋 Log</button>
+        <button class="bb-btn bb-gray" onclick="bbLogout()">🔒 Lock</button>
+      </div>`;
+  }
+
+  function bbRenderLog() {
+    const rows = bbLog.map(e=>`<tr>
+      <td>${bbEH(e.game_name)}</td><td>${bbEH(e.borrower_name)}</td>
+      <td>${bbEH(e.borrower_email)}</td><td>${e.checked_out_at ? new Date(e.checked_out_at).toLocaleDateString() : "—"}</td><td>${e.returned_at ? new Date(e.returned_at).toLocaleDateString() : "—"}</td>
+    </tr>`).join("");
+    return `<h2>📋 Borrow Log</h2>
+      <p class="bbs">Full history from Supabase.</p>
+      ${bbLog.length===0?`<div class="bb-empty">No history yet!</div>`:`
+      <div style="overflow-x:auto;"><table class="bb-log-table">
+        <thead><tr><th>Game</th><th>Borrower</th><th>Email</th><th>Out</th><th>In</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`}
+      <div class="bb-actions"><button class="bb-btn bb-gray" onclick="bbOpen('admin')">← Back</button></div>`;
+  }
+
+  // ---- ACTIONS ----
+  window.bbFilter = function() {
+    const q = document.getElementById("bb-search").value.toLowerCase();
+    document.querySelectorAll(".bb-item").forEach(el => {
+      el.style.display = el.dataset.name.toLowerCase().includes(q) ? "" : "none";
+    });
+  };
+
+  window.bbSelectGame = function(name) {
+    if (bbBorrowed[name]) { bbToast("That game is already checked out!"); return; }
+    bbActiveGame = name;
+    document.querySelectorAll(".bb-item").forEach(el => el.classList.toggle("sel", el.dataset.name===name));
+  };
+
+  window.bbConfirmBorrow = async function() {
+    if (!bbActiveGame) { bbToast("Please select a game first!"); return; }
+    const name  = document.getElementById("bb-name").value.trim();
+    const email = document.getElementById("bb-email").value.trim();
+    if (!name || !email) { bbToast("Please enter your name and email!"); return; }
+    if (!email.includes("@")) { bbToast("Please enter a valid email!"); return; }
+    const gameName = bbActiveGame;
+    const btn = document.getElementById("bb-confirm-btn");
+    btn.textContent = "Saving..."; btn.disabled = true;
+    try {
+      await bbSupabase("lending", {
+        method: "POST",
+        body: JSON.stringify({ game_name: gameName, borrower_name: name, borrower_email: email, status: "checked_out", checked_out_at: new Date().toISOString() }),
+        prefer: "return=representation"
+      });
+      await bbLoadBorrowed();
+      bbUpdateBadges();
+      bbActiveGame = null;
+      bbToast(`"${gameName}" checked out to ${name}! 🎉`);
+      bbOpen("main");
+    } catch(e) {
+      bbToast("Error saving — check console.");
+      console.error(e);
+      btn.textContent = "Confirm Borrow ✅"; btn.disabled = false;
+    }
+  };
+
+  window.bbDoReturn = async function(game) {
+    const rec = bbBorrowed[game];
+    if (!rec) return;
+    try {
+      await bbSupabase(`lending?id=eq.${rec.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: "available", returned_at: new Date().toISOString() }),
+        prefer: "return=minimal",
+        headers: { "Prefer": "return=minimal" }
+      });
+      await bbLoadBorrowed();
+      bbUpdateBadges();
+      bbToast(`"${game}" returned! 🎲`);
+      bbOpen("admin");
+    } catch(e) {
+      bbToast("Error updating — check console.");
+      console.error(e);
+    }
+  };
+
+  window.bbPin = function(val) {
+    if (val==="clear") bbPinEntry = bbPinEntry.slice(0,-1);
+    else if (val==="ok") {
+      if (bbPinEntry === BB_ADMIN_PIN) {
+        bbIsAdmin = true; bbPinEntry = "";
+        document.getElementById("bb-fab").classList.add("bb-admin");
+        bbOpen("admin");
+      } else {
+        document.getElementById("bb-pin-err").textContent = "Incorrect PIN. Try again.";
+        bbPinEntry = "";
+      }
+    } else { if (bbPinEntry.length < 4) bbPinEntry += val; }
+    const d = document.getElementById("bb-pin-disp");
+    if (d) d.textContent = "●".repeat(bbPinEntry.length) + "·".repeat(4-bbPinEntry.length);
+  };
+
+  window.bbLogout = function() {
+    bbIsAdmin = false; bbPinEntry = "";
+    document.getElementById("bb-fab").classList.remove("bb-admin");
+    bbOpen("main");
+  };
+
+  window.bbOpenLog = async function() {
+    await bbLoadLog();
+    bbOpen("log");
+  };
+
+  // ---- BADGES ----
+  function bbGetGameNames() {
+    const names = new Set();
+    document.querySelectorAll(".game-title").forEach(el => {
+      const t = el.textContent.trim();
+      if (t.length > 1 && t.length < 120) names.add(t);
+    });
+    return [...names].sort();
+  }
+
+  function bbUpdateBadges() {
+    document.querySelectorAll(".game-card").forEach(card => {
+      const nameEl = card.querySelector(".game-title");
+      if (!nameEl) return;
+      const gn = nameEl.textContent.trim();
+      const ex = card.querySelector(".bb-badge");
+      if (ex) ex.remove();
+      const badge = document.createElement("div");
+      badge.className = "bb-badge " + (bbBorrowed[gn] ? "bb-badge-borrowed" : "bb-badge-available");
+      badge.textContent = bbBorrowed[gn] ? `📦 Out — ${bbBorrowed[gn].name}` : "✅ Available";
+      nameEl.insertAdjacentElement("afterend", badge);
+    });
+  }
+
+  // ---- UTILS ----
+  function bbEH(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+  function bbEA(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,"&quot;"); }
+
+  // ---- INIT ----
+  // Polls until GameCache has rendered at least one game card, then starts.
+  function bbWaitAndInit() {
+    const hits = document.getElementById("hits");
+    if (hits && hits.querySelector(".game-card")) {
+      bbInjectCSS();
+      bbInjectHTML();
+      bbLoadBorrowed().then(() => {
+        bbUpdateBadges();
+        // Watch #hits for GameCache re-renders (pagination/filters)
+        new MutationObserver(bbUpdateBadges).observe(hits, { childList: true, subtree: false });
+      });
+    } else {
+      setTimeout(bbWaitAndInit, 500);
+    }
+  }
+  bbWaitAndInit();
+  </script>
 </body>
 </html>
