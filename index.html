@@ -494,10 +494,9 @@
       });
     }
 
-    const observer = new MutationObserver(() => { updateBadges(); });
-    observer.observe(document.body, { childList: true, subtree: true });
-    setTimeout(updateBadges, 2000);
-    setTimeout(updateBadges, 5000);
+    setTimeout(updateBadges, 3000);
+    setTimeout(updateBadges, 6000);
+    setTimeout(updateBadges, 10000);
 
     // ---- UTILS ----
     function escHtml(str) {
