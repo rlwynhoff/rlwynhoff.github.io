@@ -184,7 +184,7 @@
 
   <script>
   // ---- THE BORROWED BOARD — lending overlay ----
-  window.addEventListener("load", function () {
+  setTimeout(function () {
 
     const ADMIN_PIN = "2485";
     const STORAGE_KEY_BORROWED = "borrowedBoard_borrowed";
@@ -507,7 +507,7 @@
       return String(str).replace(/'/g, "\\'").replace(/"/g, "&quot;");
     }
 
-  }); // end window.addEventListener("load", ...)
+  }, 100); // end setTimeout
   </script>
 </body>
 </html>
