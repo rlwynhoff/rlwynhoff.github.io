@@ -235,6 +235,7 @@
     const s = document.createElement("style");
     s.textContent = `
       .bb-badge{display:inline-block;font-size:.7rem;font-weight:800;padding:.2rem .55rem;border-radius:6px;margin-top:6px;pointer-events:none;}
+      .bb-thumb-badge{position:absolute;bottom:.4rem;left:.4rem;margin-top:0;z-index:10;font-size:.75rem;padding:.3rem .6rem;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.3);pointer-events:none;}
       .bb-badge-available{background:#d4f7ec;color:#0a7a56;}
       .bb-badge-borrowed{background:#fde0e0;color:#b81c1c;}
       #bb-fab{position:fixed;bottom:1.5rem;right:1.5rem;z-index:900;background:#6C5CE7;color:#fff;border:none;border-radius:50px;padding:.75rem 1.3rem;font-size:.95rem;font-weight:800;cursor:pointer;box-shadow:0 4px 18px rgba(108,92,231,.45);display:flex;align-items:center;gap:.5rem;transition:transform .15s,box-shadow .15s;font-family:inherit;}
@@ -437,14 +438,11 @@
   };
 
   window.bbDoReturn = async function(game) {
-    const rec = bbBorrowed[game];
-    if (!rec) return;
     try {
-      await bbSupabase(`lending?id=eq.${rec.id}`, {
+      await bbSupabase("lending?game_name=eq." + encodeURIComponent(game) + "&status=eq.checked_out", {
         method: "PATCH",
         body: JSON.stringify({ status: "available", returned_at: new Date().toISOString() }),
-        prefer: "return=minimal",
-        headers: { "Prefer": "return=minimal" }
+        prefer: "return=minimal"
       });
       await bbLoadBorrowed();
       bbUpdateBadges();
@@ -498,12 +496,21 @@
       const nameEl = card.querySelector(".game-title");
       if (!nameEl) return;
       const gn = nameEl.textContent.trim();
-      const ex = card.querySelector(".bb-badge");
-      if (ex) ex.remove();
-      const badge = document.createElement("div");
-      badge.className = "bb-badge " + (bbBorrowed[gn] ? "bb-badge-borrowed" : "bb-badge-available");
-      badge.textContent = bbBorrowed[gn] ? `📦 Out — ${bbBorrowed[gn].name}` : "✅ Available";
-      nameEl.insertAdjacentElement("afterend", badge);
+
+      // Remove any existing badge
+      card.querySelectorAll(".bb-badge").forEach(b => b.remove());
+
+      // Only add badge on the summary (thumbnail) if checked out
+      if (bbBorrowed[gn]) {
+        const summary = card.querySelector(".game-summary");
+        if (summary) {
+          summary.style.position = "relative";
+          const badge = document.createElement("div");
+          badge.className = "bb-badge bb-badge-borrowed bb-thumb-badge";
+          badge.textContent = "📦 Out";
+          summary.appendChild(badge);
+        }
+      }
     });
   }
 
